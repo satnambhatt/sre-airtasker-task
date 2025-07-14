@@ -3,6 +3,7 @@ PYTHON = python3
 VENV_DIR = .venv
 PIP = $(VENV_DIR)/bin/pip
 SRC_DIR = src
+VERSION = $(shell cat src/__version__.py | grep VERSION | cut -d "'" -f 2)
 
 # Phony targets (targets that don't create a file of the same name)
 .PHONY: all venv install run clean
@@ -34,3 +35,20 @@ clean:
 	@echo "Cleaning up..."
 	rm -rf $(SRC_DIR)/__pycache__
 	rm -rf $(VENV_DIR)
+
+build:
+	@echo "Building Docker image..."
+	docker build -t airtasker-server:$(VERSION) .
+
+run-docker:
+	@echo "Running Docker image..."
+	docker run -p 8000:8000 airtasker-server:$(VERSION)
+
+push-docker: build
+	@echo "Pushing Docker image to local minikube..."
+	minikube image load airtasker-server:$(VERSION)
+	@echo "Image loaded successfully at $(shell minikube image list | grep airtasker-server)"
+
+deploy-chart:
+	@echo "Deploying chart..."
+	cd helm && helm upgrade --install airtasker-server ./airtasker-server --namespace airtasker --create-namespace --set image.tag=$(VERSION)
