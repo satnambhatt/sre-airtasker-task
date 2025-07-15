@@ -56,6 +56,21 @@ spec:
           resources:
             {{- toYaml . | nindent 12 }}
           {{- end }}
+          {{- if and .Values.configMap.enabled .Values.secrets.enabled }}
+          envFrom:
+            - configMapRef:
+                name: {{ include "airtasker-server.fullname" . }}
+            - secretRef:
+                name: {{ include "airtasker-server.fullname" . }}
+          {{- else if .Values.configMap.enabled }}
+          envFrom:
+            - configMapRef:
+                name: {{ include "airtasker-server.fullname" . }}
+          {{- else if .Values.secrets.enabled }}
+          envFrom:
+            - secretRef:
+                name: {{ include "airtasker-server.fullname" . }}
+          {{- end }}
           {{- with .Values.volumeMounts }}
           volumeMounts:
             {{- toYaml . | nindent 12 }}
