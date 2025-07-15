@@ -38,7 +38,7 @@ clean:
 
 build:
 	@echo "Building Docker image..."
-	docker build -t airtasker-server:$(VERSION) .
+	docker build --no-cache -t airtasker-server:$(VERSION) .
 
 run-docker:
 	@echo "Running Docker image..."
@@ -54,5 +54,6 @@ deploy-chart:
 	cd helm && helm upgrade --install airtasker-server ./airtasker-server --namespace airtasker --create-namespace --set image.tag=$(VERSION)
 
 remove-chart:
-	@echo "Removing chart..."
+	@echo "Removing chart and image..."
 	cd helm && helm uninstall airtasker-server --namespace airtasker
+	minikube image rm airtasker-server:$(VERSION)

@@ -6,6 +6,7 @@ A simple HTTP server built with Python's built-in [`http.server` module](https:/
 
 - [Basic HTTP Server](#basic-http-server)
   - [Table of Contents](#table-of-contents)
+  - [Architecture Diagram](#architecture-diagram)
   - [Features](#features)
   - [Requirements](#requirements)
   - [Usage](#usage)
@@ -15,6 +16,9 @@ A simple HTTP server built with Python's built-in [`http.server` module](https:/
   - [Stopping the server](#stopping-the-server)
 
 ---
+
+## Architecture Diagram 
+![](/docs/airtasker-architecture.png)
 
 ## Features
 
@@ -82,6 +86,13 @@ minikube start \
 make push-docker
 
 make deploy-chart
+
+# To access the server from browser add the following to /etc/hosts file on your machine (need root permissions)
+sudo sh -c 'echo "127.0.0.1 airtasker-server.local" >> /etc/hosts'
+
+# Start the minikube tunnel
+minikube tunnel
+curl -vvv http://airtasker-server.local
 
 # Stop the minikube cluster 
 minikube stop

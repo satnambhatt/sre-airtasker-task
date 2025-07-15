@@ -15,7 +15,6 @@ logging.basicConfig(
     format=config["log_format"],
     handlers=[
         logging.StreamHandler(),
-        logging.FileHandler(config["log_file"])
     ]
 )
 logger = logging.getLogger(__name__)
@@ -40,7 +39,7 @@ class BasicHTTPServer(http.server.BaseHTTPRequestHandler):
 
   def handle_root(self):
     """Handle requests to the root endpoint"""
-    response = f"{config['app_name']}!\n"
+    response = f"{config['app_name']}\n"
     self.wfile.write(response.encode("utf-8"))
 
   def handle_healthcheck(self):
