@@ -1,6 +1,6 @@
 FROM python:3.13-alpine AS builder
 WORKDIR /app
-COPY requirements.txt .
+COPY src/requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Stage 2: Runtime image

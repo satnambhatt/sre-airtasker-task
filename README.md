@@ -94,6 +94,8 @@ sudo sh -c 'echo "127.0.0.1 airtasker-server.local" >> /etc/hosts'
 
 # Start the minikube tunnel
 minikube tunnel
+
+# In a new termianl execute or open up browser and goto http://airtasker-server.local
 curl -vvv http://airtasker-server.local
 
 # Stop the minikube cluster 
