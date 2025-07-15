@@ -8,6 +8,8 @@ def load_config() -> Dict[str, Any]:
         "server_host": os.getenv("SERVER_HOST", ""),
         "server_port": int(os.getenv("SERVER_PORT", "8000")),
         "log_level": os.getenv("LOG_LEVEL", "INFO"),
+        "log_file": os.getenv("LOG_FILE", "server.log"),
+        "log_format": os.getenv("LOG_FORMAT", "%(asctime)s - %(name)s - %(levelname)s - %(message)s"),
         "cors_origin": os.getenv("CORS_ORIGIN", "*"),
         "debug_mode": os.getenv("DEBUG_MODE", "false").lower() == "true"
     }

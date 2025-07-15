@@ -1,4 +1,4 @@
-FROM python:3.13-alpine as builder
+FROM python:3.13-alpine AS builder
 WORKDIR /app
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
@@ -6,7 +6,13 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Stage 2: Runtime image
 FROM python:3.13-alpine
 
+RUN adduser -D -h /home/appuser -s /bin/bash appuser && \
+    mkdir -p /app && \
+    chown -R appuser:appuser /app
+
 WORKDIR /app
+USER appuser
+
 COPY --from=builder /usr/local/lib/python3.13/site-packages /usr/local/lib/python3.13/site-packages
 COPY src/ .
 

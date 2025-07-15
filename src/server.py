@@ -6,7 +6,19 @@ import http.server
 import socketserver
 from datetime import datetime
 import json
+import logging
 from config import config
+
+# Configure logging
+logging.basicConfig(
+    level=getattr(logging, config["log_level"].upper()),
+    format=config["log_format"],
+    handlers=[
+        logging.StreamHandler(),
+        logging.FileHandler(config["log_file"])
+    ]
+)
+logger = logging.getLogger(__name__)
 
 class BasicHTTPServer(http.server.BaseHTTPRequestHandler):
   def do_GET(self):
@@ -51,13 +63,18 @@ class BasicHTTPServer(http.server.BaseHTTPRequestHandler):
 
   def log_message(self, format, *args):
     """Override to provide better logging"""
+    message = format % args
+    logger.info(f"HTTP Request: {message}")
+    
+    # Also log as JSON for structured logging
     log_entry = {
       "timestamp": datetime.now().isoformat(),
-      "level": config["log_level"],
-      "message": format % args,
-      "type": "access_log"
+      "level": "INFO",
+      "message": message,
+      "type": "access_log",
+      "logger": "http_server"
     }
-    print(json.dumps(log_entry))
+    logger.debug(json.dumps(log_entry))
 
 
 def run_server(port=None):
@@ -69,16 +86,16 @@ def run_server(port=None):
   handler = BasicHTTPServer
 
   with socketserver.TCPServer((host, port), handler) as httpd:
-    print(f"Server started at http://{host or 'localhost'}:{port}")
-    print("Available endpoints:")
-    print(f"  - http://{host or 'localhost'}:{port}/")
-    print(f"  - http://{host or 'localhost'}:{port}/healthcheck")
-    print("Press Ctrl+C to stop the server")
+    logger.info(f"Server started at http://{host or 'localhost'}:{port}")
+    logger.info("Available endpoints:")
+    logger.info(f"  - http://{host or 'localhost'}:{port}/")
+    logger.info(f"  - http://{host or 'localhost'}:{port}/healthcheck")
+    logger.info("Press Ctrl+C to stop the server")
 
     try:
       httpd.serve_forever()
     except KeyboardInterrupt:
-      print("\nShutting down server...")
+      logger.info("Shutting down server...")
       httpd.shutdown()
 
 
@@ -91,6 +108,6 @@ if __name__ == "__main__":
     try:
       port = int(sys.argv[1])
     except ValueError:
-      print(f"Invalid port number. Using default port {config['server_port']}.")
+      logger.warning(f"Invalid port number. Using default port {config['server_port']}.")
 
   run_server(port)

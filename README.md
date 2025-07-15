@@ -2,6 +2,20 @@
 
 A simple HTTP server built with Python's built-in [`http.server` module](https://docs.python.org/3/library/http.server.html).
 
+## Table of Contents
+
+- [Basic HTTP Server](#basic-http-server)
+  - [Table of Contents](#table-of-contents)
+  - [Features](#features)
+  - [Requirements](#requirements)
+  - [Usage](#usage)
+    - [Running the server Locally](#running-the-server-locally)
+    - [Testing the endpoints](#testing-the-endpoints)
+    - [Running the server on Minikube](#running-the-server-on-minikube)
+  - [Stopping the server](#stopping-the-server)
+
+---
+
 ## Features
 
 - **Root endpoint (`/`)**: Returns a welcome message with server information
@@ -9,9 +23,9 @@ A simple HTTP server built with Python's built-in [`http.server` module](https:/
 - **Content-Type**: All responses are served as `text/plain`
 - **Logging**: Request logging with timestamps in json format
 - **Error handling**: 404 responses for unknown endpoints
-- **Environment configuration**: App name can be customized via `APP_NAME` environment variable
+- **Environment configuration**: App name can be customized via `APP_NAME` environment variable either via config map or secrets
+- **Simple Kubernetes Cluster**: Creates a Minikube cluster
 - **Helm Charts**: Deploy in any Kubernetes environment
-- **Simple Kubernetes Cluster**: Creates a 
 
 ## Requirements
 
@@ -64,6 +78,10 @@ curl http://localhost:8000/healthcheck
 minikube start \
   --driver=docker\
   --addons=registry,dashboard,ingress,ingress-dns,metrics-server 
+
+make push-docker
+
+make deploy-chart
 
 # Stop the minikube cluster 
 minikube stop
