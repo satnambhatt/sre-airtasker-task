@@ -14,6 +14,7 @@ A simple HTTP server built with Python's built-in [`http.server` module](https:/
     - [Testing the endpoints](#testing-the-endpoints)
     - [Running the server on Minikube](#running-the-server-on-minikube)
   - [Helm Configuration](#helm-configuration)
+  - [Things to Note](#things-to-note)
 
 ---
 
@@ -25,11 +26,12 @@ A simple HTTP server built with Python's built-in [`http.server` module](https:/
 - **Root endpoint (`/`)**: Returns a welcome message with server information
 - **Health check endpoint (`/healthcheck`)**: Returns server health status
 - **Content-Type**: All responses are served as `text/plain`
-- **Logging**: Request logging with timestamps in json format
+- **Logging**: Request logging with timestamps in plain text format
 - **Error handling**: 404 responses for unknown endpoints
 - **Environment configuration**: App name can be customized via `APP_NAME` environment variable either via config map or secrets
 - **Simple Kubernetes Cluster**: Creates a Minikube cluster
 - **Helm Charts**: Deploy in any Kubernetes environment
+- **Kubernetes Dashboard**: View metrics via port-forwarding
 
 ## Requirements
 
@@ -129,3 +131,12 @@ minikuke tunnel
 # In a new shell
 curl --resolve "airtasker-server.local:80:127.0.0.1" -i http://airtasker-server.local -vvv
 ```
+
+## Things to Note
+- This is a single node deployment which uses `controlplane` to host the pods on.
+- Network Policy is configured however, would require a different CNI for it to work. 
+- Using the default ingress-nginx controller for ingress, however, in a cloud kubernetes environment, more advanced tools can be used. 
+- For logging a fluent-bit daemonset can be deployed to scrape the `stdout` logs from each pod and pushed to a logging service such as CloudWatch or ELK. 
+- Pods currently are configured with non root user, however, [ValidatingAdmissionPolicy](https://kubernetes.io/docs/reference/access-authn-authz/validating-admission-policy/) can be created to validate pod creations. 
+- A TLS or mTLS can also be setup using istio for a more secure internet-application and pod-pod connectivity. 
+- The horizontal pod autoscaler is currently set at 80% CPU and 80% memory threshold. 
