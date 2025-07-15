@@ -13,7 +13,6 @@ A simple HTTP server built with Python's built-in [`http.server` module](https:/
     - [Running the server Locally](#running-the-server-locally)
     - [Testing the endpoints](#testing-the-endpoints)
     - [Running the server on Minikube](#running-the-server-on-minikube)
-  - [Stopping the server](#stopping-the-server)
 
 ---
 
@@ -97,7 +96,3 @@ curl -vvv http://airtasker-server.local
 # Stop the minikube cluster 
 minikube stop
 ```
-
-## Stopping the server
-
-Press `Ctrl+C` to stop the server gracefully.
