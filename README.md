@@ -13,6 +13,7 @@ A simple HTTP server built with Python's built-in [`http.server` module](https:/
     - [Running the server Locally](#running-the-server-locally)
     - [Testing the endpoints](#testing-the-endpoints)
     - [Running the server on Minikube](#running-the-server-on-minikube)
+  - [Helm Configuration](#helm-configuration)
 
 ---
 
@@ -95,4 +96,36 @@ curl -vvv http://airtasker-server.local
 
 # Stop the minikube cluster 
 minikube stop
+```
+
+## Helm Configuration
+
+The helm charts are placed in [helm/airtasker-server](/helm/airtasker-server/)
+
+To create a sample chart use the following command.
+```bash
+helm create airtasker-server
+```
+
+To render the chart template locally and display the output. This can be used with the `kubectl` commands if required. 
+```bash
+helm template airtasker-server > template.yaml
+```
+
+To deploy the helm chart.
+```bash
+helm upgrade --install airtasker-server ./airtasker-server --namespace airtasker --create-namespace --set image.tag=0.0.0
+```
+
+To test the helm chart.
+```bash
+helm test airtasker-server --namespace airtasker
+```
+
+To connect to the service via ingress controller on MacOs
+```bash
+minikuke tunnel
+
+# In a new shell
+curl --resolve "airtasker-server.local:80:127.0.0.1" -i http://airtasker-server.local -vvv
 ```
